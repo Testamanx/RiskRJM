@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оценка риска РМЖ | Андрюшин А.С.</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(165deg, #f5f0f5 0%, #ece4e9 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            margin: 0;
+        }
+        
+        .app {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 30px 50px rgba(80, 40, 60, 0.2);
+        }
+        
+        .header {
+            background: linear-gradient(112deg, #684756 0%, #8e6b7e 100%);
+            padding: 32px 28px 24px;
+            color: white;
+        }
+        
+        .doctor-name {
+            font-size: 32px;
+            font-weight: 600;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+        
+        .doctor-specialty {
+            font-size: 16px;
+            opacity: 0.95;
+            letter-spacing: 0.3px;
+        }
+        
+        .content {
+            padding: 28px;
+            background: white;
+            min-height: 500px;
+        }
+        
+        .greeting-card {
+            background: #faf5f9;
+            border-radius: 28px;
+            padding: 30px;
+            margin-bottom: 24px;
+        }
+        
+        .greeting-text {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #332a30;
+        }
+        
+        .greeting-text strong {
+            font-family: 'Georgia', serif;
+            font-size: 24px;
+            color: #684756;
+            display: block;
+            margin-bottom: 16px;
+        }
+        
+        .greeting-signature {
+            font-family: 'Georgia', serif;
+            font-size: 20px;
+            color: #684756;
+            text-align: right;
+            border-top: 2px dashed #dac0cf;
+            padding-top: 20px;
+            margin-top: 20px;
+            font-style: italic;
+        }
+        
+        .disclaimer-box {
+            background: #fff1f1;
+            border-left: 6px solid #b0003a;
+            border-radius: 20px;
+            padding: 18px 22px;
+            margin-bottom: 28px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #4a2c3a;
+        }
+        
+        .disclaimer-box strong {
+            color: #b0003a;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .button {
+            background: #684756;
+            color: white;
+            border: none;
+            border-radius: 60px;
+            padding: 18px 28px;
+            font-size: 17px;
+            font-weight: 600;
+            width: 100%;
+            text-align: center;
+            cursor: pointer;
+            display: block;
+            transition: all 0.2s;
+            -webkit-appearance: none;
+        }
+        
+        .button:hover {
+            background: #7d5b70;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(104, 71, 86, 0.2);
+        }
+        
+        .button.secondary {
+            background: white;
+            border: 2px solid #dac0cf;
+            color: #684756;
+        }
+        
+        .progress {
+            height: 8px;
+            background: #eedde6;
+            border-radius: 20px;
+            margin: 8px 0 18px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #a75b7a, #c087a3);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .counter {
+            text-align: right;
+            font-size: 15px;
+            font-weight: 500;
+            color: #8b6f81;
+            margin-bottom: 12px;
+        }
+        
+        .question-card {
+            background: white;
+            border-radius: 28px;
+            padding: 22px 0;
+        }
+        
+        .question-text {
+            font-family: 'Georgia', serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: #332a30;
+            margin-bottom: 24px;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .model-badge {
+            display: inline-block;
+            background: #f0e4ec;
+            color: #684756;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 4px 14px;
+            border-radius: 30px;
+            white-space: nowrap;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        
+        .option {
+            background: #faf5f9;
+            border: 2px solid #eedde6;
+            border-radius: 30px;
+            padding: 16px 20px;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #332a30;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .option:hover {
+            background: #f7e6f0;
+            border-color: #c79bb5;
+        }
+        
+        .option.selected {
+            background: #eedde6;
+            border-color: #684756;
+            font-weight: 500;
+        }
+        
+        .option-icon {
+            font-size: 24px;
+            min-width: 36px;
+            text-align: center;
+        }
+        
+        .nav {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .nav .button {
+            flex: 1;
+        }
+        
+        .result-card {
+            background: #faf5f9;
+            border-radius: 32px;
+            padding: 30px;
+        }
+        
+        .risk-badge {
+            display: inline-block;
+            background: #684756;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 8px 28px;
+            border-radius: 40px;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        
+        .risk-level {
+            font-family: 'Georgia', serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: #332a30;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .scores-panel {
+            display: flex;
+            gap: 15px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+        
+        .score-item {
+            flex: 1;
+            min-width: 120px;
+            background: white;
+            border-radius: 24px;
+            padding: 18px 12px;
+            text-align: center;
+            border: 1px solid #eedde6;
+        }
+        
+        .score-item.highlight {
+            background: #eedde6;
+            border-color: #c79bb5;
+        }
+        
+        .score-label {
+            font-size: 14px;
+            color: #7a5f70;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .score-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: #684756;
+        }
+        
+        .score-desc {
+            font-size: 12px;
+            color: #9b8391;
+            margin-top: 5px;
+        }
+        
+        .description-box {
+            background: white;
+            border-radius: 24px;
+            padding: 22px;
+            margin: 22px 0;
+            font-size: 16px;
+            line-height: 1.7;
+            border: 1px solid #eedde6;
+        }
+        
+        .warning-box {
+            background: #fff1f1;
+            border-radius: 24px;
+            padding: 22px;
+            margin: 22px 0;
+            font-size: 15px;
+            line-height: 1.7;
+            border-left: 4px solid #b0003a;
+        }
+        
+        .warning-box strong {
+            color: #b0003a;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .recs-title {
+            font-weight: 700;
+            font-size: 20px;
+            color: #684756;
+            margin: 25px 0 18px;
+            border-left: 5px solid #c79bb5;
+            padding-left: 18px;
+        }
+        
+        .recs-list {
+            list-style: none;
+        }
+        
+        .recs-list li {
+            margin-bottom: 16px;
+            padding-left: 30px;
+            position: relative;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #332a30;
+        }
+        
+        .recs-list li::before {
+            content: "●";
+            color: #684756;
+            font-size: 20px;
+            position: absolute;
+            left: 6px;
+            top: -2px;
+        }
+        
+        .social-section {
+            margin: 30px 0 20px;
+            text-align: center;
+        }
+        
+        .social-title {
+            font-weight: 600;
+            font-size: 18px;
+            color: #684756;
+            margin-bottom: 18px;
+        }
+        
+        .social-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .social-link {
+            flex: 1;
+            min-width: 120px;
+            background: #f5ecf2;
+            border-radius: 40px;
+            padding: 14px 12px;
+            text-align: center;
+            color: #332a30;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            border: 1px solid #dac0cf;
+            transition: all 0.2s;
+        }
+        
+        .social-link:hover {
+            background: #eedde6;
+            border-color: #684756;
+            transform: translateY(-2px);
+        }
+        
+        .telegram-direct {
+            display: block;
+            background: #e8f0fe;
+            border: 2px solid #c79bb5;
+            border-radius: 60px;
+            padding: 18px;
+            margin: 25px 0 15px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: #332a30;
+            text-decoration: none;
+        }
+        
+        .footnote {
+            font-size: 11px;
+            color: #9b8391;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #9b8391;
+            padding: 20px 24px 24px;
+            border-top: 1px solid #eedde6;
+        }
+        
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        @media (max-width: 480px) {
+            .content { padding: 20px; }
+            .doctor-name { font-size: 28px; }
+            .greeting-card { padding: 22px; }
+            .question-text { font-size: 20px; }
+            .risk-level { font-size: 36px; }
+            .social-links { flex-direction: column; }
+            .option { padding: 14px 16px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="header">
+            <div class="doctor-name">Алексей Сергеевич Андрюшин</div>
+            <div class="doctor-specialty">торакальный хирург • онколог</div>
+        </div>
+        
+        <div class="content" id="content">
+            <!-- Начальный экран -->
+            <div class="disclaimer-box">
+                <strong>⚠️ Важное предупреждение</strong>
+                Данный тест объединяет две авторитетные модели оценки риска: Gail и полную версию Tyrer-Cuzick (IBIS) v.8, включающую анализ семейного анамнеза и генетических мутаций. Результат основан на статистических данных и не является диагнозом. Он не заменяет очную консультацию специалиста.
+            </div>
+            
+            <div class="greeting-card">
+                <div class="greeting-text">
+                    <strong>Уважаемые пациенты!</strong>
+                    Я, Алексей Сергеевич Андрюшин, торакальный хирург и онколог, разработал для вас этот комбинированный опросник. Мы объединили две ведущие международные модели оценки риска рака молочной железы — Gail и Tyrer-Cuzick — чтобы получить максимально точную картину.
+                    <br><br>
+                    Ответьте на 20 вопросов, включающих анализ семейного анамнеза и генетических факторов. В конце вы увидите отдельные баллы по каждой модели и итоговую комбинированную оценку риска, а также персональные рекомендации.
+                </div>
+                <div class="greeting-signature">— с заботой о вашем здоровье, Андрюшин А.С.</div>
+            </div>
+            
+            <button class="button" id="startButton">Начать тест →</button>
+        </div>
+        
+        <div class="footer">
+            Gail + Tyrer-Cuzick (полная версия) • не заменяет консультацию врача
+        </div>
+    </div>
+
+    <script>
+        // ПОЛНЫЕ ВОПРОСЫ ПО МОДЕЛИ TYRER-CUZICK (20 ВОПРОСОВ)
+        const questions = [
+            // Базовые факторы (Gail + Tyrer-Cuzick)
+            {
+                text: "Ваш текущий возраст?",
+                options: [
+                    { text: "Менее 35 лет", g: 0, t: 0 },
+                    { text: "35–39 лет", g: 1, t: 1 },
+                    { text: "40–44 года", g: 2, t: 2 },
+                    { text: "45–49 лет", g: 3, t: 3 },
+                    { text: "50–54 года", g: 4, t: 4 },
+                    { text: "55–59 лет", g: 4, t: 5 },
+                    { text: "60–64 года", g: 5, t: 6 },
+                    { text: "65 лет и старше", g: 5, t: 7 }
+                ]
+            },
+            {
+                text: "Возраст наступления первой менструации (менархе)?",
+                options: [
+                    { text: "14 лет и старше (позднее созревание)", g: 0, t: 0 },
+                    { text: "12–13 лет (средний возраст)", g: 1, t: 1 },
+                    { text: "Младше 12 лет (раннее созревание)", g: 2, t: 2 }
+                ]
+            },
+            {
+                text: "Были ли у вас роды, и если да, то в каком возрасте?",
+                options: [
+                    { text: "Первые роды до 30 лет", g: 0, t: 0 },
+                    { text: "Первые роды после 30 лет", g: 2, t: 2 },
+                    { text: "Нет родов (нерожавшие)", g: 3, t: 3 }
+                ]
+            },
+            {
+                text: "Наступила ли у вас менопауза, и если да, то в каком возрасте?",
+                options: [
+                    { text: "Нет, менструации регулярные (пременопауза)", g: 0, t: 0 },
+                    { text: "Да, менопауза наступила после 50 лет (поздняя)", g: 0, t: 1 },
+                    { text: "Да, менопауза наступила в 45–49 лет (средняя)", g: 0, t: 2 },
+                    { text: "Да, менопауза наступила до 45 лет (ранняя)", g: 0, t: 3 }
+                ]
+            },
+            {
+                text: "Проводились ли у вас когда-либо биопсии молочной железы?",
+                options: [
+                    { text: "Не было", g: 0, t: 0 },
+                    { text: "Доброкачественная биопсия без атипии", g: 2, t: 2 },
+                    { text: "Атипическая протоковая гиперплазия (ADH)", g: 4, t: 4 },
+                    { text: "Лобулярная карцинома in situ (LCIS)", g: 4, t: 8 }
+                ]
+            },
+            
+            // Семейный анамнез (Tyrer-Cuzick)
+            {
+                text: "Сколько у вас родственниц первой линии (мать, сёстры, дочери) с раком молочной железы?",
+                options: [
+                    { text: "Нет", g: 0, t: 0 },
+                    { text: "Одна", g: 3, t: 3 },
+                    { text: "Две и более", g: 8, t: 8 }
+                ]
+            },
+            {
+                text: "Сколько у вас родственниц второй линии (бабушки, тёти) с раком молочной железы?",
+                options: [
+                    { text: "Нет", g: 0, t: 0 },
+                    { text: "Одна", g: 0, t: 2 },
+                    { text: "Две и более", g: 0, t: 4 }
+                ]
+            },
+            {
+                text: "Есть ли у вас родственницы с двусторонним (билатеральным) раком молочной железы?",
+                options: [
+                    { text: "Нет", g: 0, t: 0 },
+                    { text: "Да", g: 0, t: 6 }
+                ]
+            },
+            {
+                text: "Есть ли у вас родственницы с раком яичников?",
+                options: [
+                    { text: "Нет", g: 0, t: 0 },
+                    { text: "Да, одна родственница", g: 0, t: 4 },
+                    { text: "Да, две и более", g: 0, t: 8 }
+                ]
+            },
+            {
+                text: "Есть ли у вас родственники мужского пола с раком молочной железы?",
+                options: [
+                    { text: "Нет", g: 0, t: 0 },
+                    { text: "Да", g: 0, t: 6 }
+                ]
+            },
+            
+            // Генетические факторы (Tyrer-Cuzick)
+            {
+                text: "Проводилось ли у вас или ваших родственников генетическое тестирование на мутации BRCA1/BRCA2?",
+                options: [
+                    { text: "Не проводилось / мутации не обнаружены", g: 0, t: 0 },
+                    { text: "Да, обнаружена мутация BRCA1", g: 0, t: 10 },
+                    { text: "Да, обнаружена мутация BRCA2", g: 0, t: 8 }
+                ]
+            },
+            
+            // Образ жизни и дополнительные факторы
+            {
+                text: "Ваш индекс массы тела (ИМТ)? (ИМТ = вес(кг) / рост(м²))",
+                options: [
+                    { text: "Менее 25 (нормальный вес)", g: 0, t: 0 },
+                    { text: "25–30 (избыточный вес)", g: 0, t: 2 },
+                    { text: "Более 30 (ожирение)", g: 0, t: 4 }
+                ]
+            },
+            {
+                text: "Какова плотность молочных желез по данным маммографии?",
+                options: [
+                    { text: "Низкая плотность (жировая ткань) / не знаю", g: 0, t: 0 },
+                    { text: "Средняя плотность (смешанный тип)", g: 0, t: 2 },
+                    { text: "Высокая плотность (плотная железистая ткань)", g: 0, t: 4 }
+                ]
+            },
+            {
+                text: "Принимали ли вы когда-либо заместительную гормональную терапию (ЗГТ)?",
+                options: [
+                    { text: "Никогда", g: 0, t: 0 },
+                    { text: "Менее 5 лет", g: 0, t: 1 },
+                    { text: "Более 5 лет", g: 0, t: 2 }
+                ]
+            },
+            {
+                text: "Употребляете ли вы алкоголь регулярно (более 3 порций в неделю)?",
+                options: [
+                    { text: "Нет / редко", g: 0, t: 0 },
+                    { text: "Да", g: 0, t: 1 }
+                ]
+            },
+            {
+                text: "Курите ли вы в настоящее время или курили в прошлом?",
+                options: [
+                    { text: "Никогда не курил(а)", g: 0, t: 0 },
+                    { text: "Курил(а) менее 10 лет", g: 0, t: 1 },
+                    { text: "Курил(а) более 10 лет", g: 0, t: 2 }
+                ]
+            },
+            {
+                text: "Были ли у вас когда-либо процедуры по увеличению груди (импланты)?",
+                options: [
+                    { text: "Нет", g: 0, t: 0 },
+                    { text: "Да", g: 0, t: 1 }
+                ]
+            },
+            {
+                text: "Ваш уровень физической активности?",
+                options: [
+                    { text: "Активный (спорт 3+ раза в неделю)", g: 0, t: 0 },
+                    { text: "Умеренный (прогулки, лёгкие нагрузки)", g: 0, t: 1 },
+                    { text: "Малоподвижный образ жизни", g: 0, t: 2 }
+                ]
+            },
+            {
+                text: "Сколько всего у вас было доброкачественных биопсий молочной железы?",
+                options: [
+                    { text: "Не было / одна биопсия", g: 0, t: 0 },
+                    { text: "Две биопсии", g: 0, t: 1 },
+                    { text: "Три и более биопсий", g: 0, t: 2 }
+                ]
+            },
+            {
+                text: "Был ли у вас когда-либо диагностирован рак яичников?",
+                options: [
+                    { text: "Нет", g: 0, t: 0 },
+                    { text: "Да", g: 0, t: 6 }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answersData = [];
+
+        function showQuestion(index) {
+            const q = questions[index];
+            const contentDiv = document.getElementById('content');
+            
+            // Определяем модель
+            let modelText = "";
+            if (index < 5) {
+                modelText = '<span class="model-badge">Gail + Tyrer-Cuzick</span>';
+            } else {
+                modelText = '<span class="model-badge">Tyrer-Cuzick (расширенная)</span>';
+            }
+            
+            let html = `
+                <div class="progress">
+                    <div class="progress-bar" style="width: ${((index + 1) / questions.length) * 100}%"></div>
+                </div>
+                <div class="counter">Вопрос ${index + 1} из ${questions.length}</div>
+                <div class="question-card">
+                    <div class="question-text">
+                        ${q.text}
+                        ${modelText}
+                    </div>
+                    <div class="options" id="optionsContainer">
+            `;
+            
+            const icons = ['👤', '🌸', '🤱', '🕰️', '🔬', '🧬', '👵', '🎗️', '🩺', '🧪', '⚖️', '📊', '💊', '🍷', '🚬', '💉', '🏃', '📋', '🎗️'];
+            
+            q.options.forEach((opt, i) => {
+                const isSelected = answersData[index] && answersData[index].selected === i;
+                html += `
+                    <div class="option ${isSelected ? 'selected' : ''}" data-q="${index}" data-opt="${i}">
+                        <span class="option-icon">${icons[i % icons.length]}</span>
+                        ${opt.text}
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                    <div class="nav">
+                        <button class="button secondary" id="prevBtn" ${index === 0 ? 'disabled' : ''}>← Назад</button>
+                        <button class="button" id="nextBtn">${index === questions.length - 1 ? 'Узнать результат' : 'Далее →'}</button>
+                    </div>
+                </div>
+            `;
+            
+            contentDiv.innerHTML = html;
+            
+            // Обработчики
+            document.querySelectorAll('.option').forEach(el => {
+                el.addEventListener('click', function() {
+                    const qIdx = parseInt(this.dataset.q);
+                    const optIdx = parseInt(this.dataset.opt);
+                    answersData[qIdx] = {
+                        selected: optIdx,
+                        g: questions[qIdx].options[optIdx].g || 0,
+                        t: questions[qIdx].options[optIdx].t || 0
+                    };
+                    showQuestion(qIdx);
+                });
+            });
+            
+            document.getElementById('prevBtn')?.addEventListener('click', function() {
+                if (currentQuestion > 0) {
+                    currentQuestion--;
+                    showQuestion(currentQuestion);
+                }
+            });
+            
+            document.getElementById('nextBtn').addEventListener('click', function() {
+                if (!answersData[currentQuestion]) {
+                    alert('Пожалуйста, выберите вариант ответа');
+                    return;
+                }
+                if (currentQuestion < questions.length - 1) {
+                    currentQuestion++;
+                    showQuestion(currentQuestion);
+                } else {
+                    showResult();
+                }
+            });
+        }
+
+        function showResult() {
+            let g = 0, t = 0;
+            answersData.forEach(a => {
+                if (a) {
+                    g += a.g || 0;
+                    t += a.t || 0;
+                }
+            });
+            
+            const total = g + t;
+            let level, desc, recommendations;
+            
+            if (total <= 15) {
+                level = "Низкий риск";
+                desc = "Ваш суммарный риск развития рака молочной железы ниже среднего популяционного. Это хороший результат, но не забывайте о стандартных мерах профилактики.";
+                recommendations = [
+                    "Ежегодный профилактический осмотр маммолога",
+                    "УЗИ молочных желез (до 40 лет) или маммография (после 40 лет): после 40 лет — раз в 2 года, после 50 — ежегодно",
+                    "Самообследование молочных желез 1 раз в месяц",
+                    "Поддержание нормального веса и регулярная физическая активность",
+                    "Ограничение алкоголя и отказ от курения",
+                    "Здоровое питание с достаточным количеством овощей и фруктов"
+                ];
+            } else if (total <= 30) {
+                level = "Умеренный риск";
+                desc = "У вас есть факторы риска, повышающие вероятность развития заболевания. Рекомендуется более частое наблюдение и коррекция образа жизни.";
+                recommendations = [
+                    "Наблюдение маммолога не реже 1 раза в год",
+                    "Маммография ежегодно (после 40 лет — обязательно)",
+                    "Консультация генетика при отягощённом семейном анамнезе",
+                    "Тщательная коррекция образа жизни: нормализация веса, питание, физическая активность",
+                    "Исключение курения и ограничение алкоголя",
+                    "Обсуждение с врачом индивидуальной программы наблюдения"
+                ];
+            } else if (total <= 45) {
+                level = "Высокий риск";
+                desc = "У вас выявлена комбинация значимых факторов риска. Вероятность развития РМЖ выше средней. Требуется углублённое обследование.";
+                recommendations = [
+                    "Консультация онколога-маммолога в ближайшее время",
+                    "МРТ молочных желез с контрастированием",
+                    "Обязательная консультация генетика и тестирование на мутации BRCA 1/2",
+                    "Маммография 1 раз в год",
+                    "Обсуждение с врачом возможностей медикаментозной профилактики",
+                    "Наблюдение каждые 6 месяцев"
+                ];
+            } else {
+                level = "Очень высокий риск";
+                desc = "Ваш профиль риска значительно превышает среднепопуляционные значения. Необходимо срочное углублённое обследование.";
+                recommendations = [
+                    "СРОЧНАЯ консультация онколога-маммолога",
+                    "Полное генетическое тестирование (BRCA1, BRCA2, и другие мутации высокого риска)",
+                    "МРТ молочных желез с контрастированием + маммография/УЗИ",
+                    "Обсуждение с врачом возможных профилактических стратегий (включая медикаментозную и хирургическую профилактику)",
+                    "Наблюдение каждые 3-6 месяцев",
+                    "Ежемесячное самообследование"
+                ];
+            }
+            
+            const contentDiv = document.getElementById('content');
+            
+            let recsHtml = '';
+            recommendations.forEach(rec => {
+                recsHtml += `<li>${rec}</li>`;
+            });
+            
+            contentDiv.innerHTML = `
+                <div class="result-card">
+                    <span class="risk-badge">${level}</span>
+                    <div class="risk-level">${level}</div>
+                    
+                    <div class="scores-panel">
+                        <div class="score-item">
+                            <div class="score-label">Gail</div>
+                            <div class="score-number">${g}</div>
+                            <div class="score-desc">классическая модель</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-label">Tyrer-Cuzick</div>
+                            <div class="score-number">${t}</div>
+                            <div class="score-desc">расширенная модель</div>
+                        </div>
+                        <div class="score-item highlight">
+                            <div class="score-label">Комбинированный</div>
+                            <div class="score-number">${total}</div>
+                            <div class="score-desc">суммарный балл</div>
+                        </div>
+                    </div>
+                    
+                    <div class="description-box">
+                        ${desc}
+                    </div>
+                    
+                    <div class="warning-box">
+                        <strong>Важно понимать:</strong>
+                        Данный тест объединяет две статистические модели оценки риска. Он не может предсказать с абсолютной точностью, разовьётся ли у конкретного человека рак молочной железы. Многие люди с высокими баллами никогда не заболевают, а у некоторых с низкими баллами заболевание может развиться. Результат — лишь повод для более внимательного отношения к своему здоровью и регулярного наблюдения у специалиста.
+                    </div>
+                    
+                    <div class="recs-title">📋 Персональные рекомендации</div>
+                    <ul class="recs-list">
+                        ${recsHtml}
+                    </ul>
+                    
+                    <!-- Социальные сети -->
+                    <div class="social-section">
+                        <div class="social-title">Мои профессиональные страницы</div>
+                        <div class="social-links">
+                            <a href="https://vk.com/st.morbi" target="_blank" class="social-link">ВКонтакте</a>
+                            <a href="https://t.me/statusmorbi" target="_blank" class="social-link">Telegram-канал</a>
+                            <a href="https://www.instagram.com/status.morbi?igsh=ZWF0cWl0a3hncXgy" target="_blank" class="social-link">Instagram*</a>
+                        </div>
+                        <div class="footnote">* Meta Platforms Inc. (владелец Instagram) признана экстремистской организацией и запрещена на территории РФ</div>
+                    </div>
+                    
+                    <a href="https://t.me/dr_andryushin" target="_blank" class="telegram-direct">
+                        📱 Связаться со мной: @dr_andryushin
+                    </a>
+                    
+                    <button class="button secondary" id="restartBtn">Пройти тест заново</button>
+                </div>
+            `;
+            
+            document.getElementById('restartBtn').addEventListener('click', function() {
+                location.reload();
+            });
+        }
+
+        // Старт
+        document.addEventListener('DOMContentLoaded', function() {
+            const startBtn = document.getElementById('startButton');
+            if (startBtn) {
+                startBtn.addEventListener('click', function() {
+                    currentQuestion = 0;
+                    answersData = [];
+                    showQuestion(0);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
